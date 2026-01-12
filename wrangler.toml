@@ -1,0 +1,57 @@
+name = "launch-test-system"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+
+[env.staging]
+name = "launch-test-system-staging"
+
+[env.production]
+name = "launch-test-system"
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "launch-test-system-db"
+database_id = "" # wrangler d1 create で生成後に設定
+
+# R2 Storage
+[[r2_buckets]]
+binding = "ASSETS"
+bucket_name = "launch-test-system-assets"
+
+# KV Namespace
+[[kv_namespaces]]
+binding = "CACHE"
+id = "" # wrangler kv:namespace create で生成後に設定
+
+# Queues
+[[queues.producers]]
+binding = "JOBS_QUEUE"
+queue = "launch-test-system-jobs"
+
+[[queues.consumers]]
+queue = "launch-test-system-jobs"
+max_batch_size = 10
+max_batch_timeout = 30
+
+# Durable Objects
+[durable_objects]
+bindings = [
+  { name = "RUN_STATE", class_name = "RunState" }
+]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["RunState"]
+
+# Cron Triggers
+[triggers]
+crons = [
+  "0 * * * *",   # 毎時: Insights同期
+  "0 0 * * *",   # 毎日0時: 日次レポート
+  "0 9 * * 1"    # 毎週月曜9時: API期限チェック
+]
+
+# Environment Variables (secrets are set via wrangler secret)
+[vars]
+ENVIRONMENT = "development"

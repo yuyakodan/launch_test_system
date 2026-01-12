@@ -1,0 +1,57 @@
+name: Feature Request
+description: 新機能のリクエスト
+title: "[Feature]: "
+labels: ["type:feature", "state:pending"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        新機能のリクエストありがとうございます。
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: 実現したいことを簡潔に記述してください
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: 背景・モチベーション
+      description: なぜこの機能が必要ですか？
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 提案する解決策
+      description: どのように実現すべきですか？
+
+  - type: dropdown
+    id: domain
+    attributes:
+      label: ドメイン
+      options:
+        - tenant
+        - lp
+        - creative
+        - meta-api
+        - measurement
+        - approval
+        - auto-stop
+        - learning
+        - cloudflare
+        - audit
+        - other
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 優先度
+      options:
+        - P3-Low
+        - P2-Medium
+        - P1-High
+        - P0-Critical
+      default: 1

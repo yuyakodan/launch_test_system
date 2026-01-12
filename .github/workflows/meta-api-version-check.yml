@@ -1,0 +1,45 @@
+name: Meta API Version Check
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # 毎週月曜9時
+  workflow_dispatch:
+
+jobs:
+  check-version:
+    name: Check Meta Marketing API Version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check API Version Expiry
+        run: |
+          echo "Meta Marketing API バージョン期限チェック"
+          echo "現在のバージョン: v22.0"
+          echo "期限: 2026-01-13"
+
+          EXPIRY_DATE="2026-01-13"
+          TODAY=$(date +%Y-%m-%d)
+          DAYS_LEFT=$(( ($(date -d "$EXPIRY_DATE" +%s) - $(date -d "$TODAY" +%s)) / 86400 ))
+
+          if [ $DAYS_LEFT -le 7 ]; then
+            echo "::error::Meta API v22.0 の期限が7日以内です！即時対応が必要です。"
+            exit 1
+          elif [ $DAYS_LEFT -le 30 ]; then
+            echo "::warning::Meta API v22.0 の期限が30日以内です。移行計画を確認してください。"
+          elif [ $DAYS_LEFT -le 60 ]; then
+            echo "::notice::Meta API v22.0 の期限が60日以内です。"
+          else
+            echo "Meta API v22.0 の残り日数: $DAYS_LEFT 日"
+          fi
+      - name: Create Issue if Urgent
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Meta API バージョン期限切れ警告',
+              body: 'Meta Marketing API v22.0 の期限が迫っています。新バージョンへの移行が必要です。',
+              labels: ['priority:P0-Critical', 'domain:meta-api', 'type:chore']
+            })

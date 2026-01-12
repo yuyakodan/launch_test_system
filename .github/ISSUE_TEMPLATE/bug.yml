@@ -1,0 +1,46 @@
+name: Bug Report
+description: バグの報告
+title: "[Bug]: "
+labels: ["type:bug", "state:pending"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        バグ報告ありがとうございます。
+
+  - type: textarea
+    id: description
+    attributes:
+      label: バグの説明
+      description: 何が起きましたか？
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待される動作
+      description: 本来どうなるべきでしたか？
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 再現手順
+      description: バグを再現する手順を記述してください
+      placeholder: |
+        1. '...'に移動
+        2. '...'をクリック
+        3. エラーが発生
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: 深刻度
+      options:
+        - 軽微（表示の問題など）
+        - 中程度（機能の一部が動作しない）
+        - 重大（主要機能が動作しない）
+        - 致命的（データ損失、セキュリティ問題）
+      default: 1

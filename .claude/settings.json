@@ -1,0 +1,17 @@
+{
+  "$schema": "https://claude.ai/settings-schema.json",
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(wrangler *)",
+      "Bash(gh *)",
+      "Bash(git *)",
+      "Bash(npx vitest *)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~)"
+    ]
+  },
+  "mcpServers": {}
+}
