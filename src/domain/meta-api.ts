@@ -232,14 +232,18 @@ export async function exchangeCodeForToken(
     )
 
     if (!response.ok) {
-      const errorData = await response.json()
+      const errorData = (await response.json()) as Record<string, unknown>
       return {
         success: false,
         error: parseMetaError(errorData),
       }
     }
 
-    const data = await response.json()
+    const data = (await response.json()) as {
+      access_token: string
+      expires_in: number
+      scope?: string
+    }
 
     return {
       success: true,
@@ -283,14 +287,17 @@ export async function exchangeForLongLivedToken(
     )
 
     if (!response.ok) {
-      const errorData = await response.json()
+      const errorData = (await response.json()) as Record<string, unknown>
       return {
         success: false,
         error: parseMetaError(errorData),
       }
     }
 
-    const data = await response.json()
+    const data = (await response.json()) as {
+      access_token: string
+      expires_in?: number
+    }
 
     // 長期トークンは約60日間有効
     return {
@@ -420,25 +427,17 @@ export function convertTargetingToApiFormat(
   const result: Record<string, unknown> = {}
 
   if (targeting.geoLocations) {
-    result.geo_locations = {}
+    const geoLocations: Record<string, unknown> = {}
     if (targeting.geoLocations.countries) {
-      result.geo_locations = {
-        ...result.geo_locations,
-        countries: targeting.geoLocations.countries,
-      }
+      geoLocations.countries = targeting.geoLocations.countries
     }
     if (targeting.geoLocations.regions) {
-      result.geo_locations = {
-        ...result.geo_locations,
-        regions: targeting.geoLocations.regions,
-      }
+      geoLocations.regions = targeting.geoLocations.regions
     }
     if (targeting.geoLocations.cities) {
-      result.geo_locations = {
-        ...result.geo_locations,
-        cities: targeting.geoLocations.cities,
-      }
+      geoLocations.cities = targeting.geoLocations.cities
     }
+    result.geo_locations = geoLocations
   }
 
   if (targeting.ageMin !== undefined) {
